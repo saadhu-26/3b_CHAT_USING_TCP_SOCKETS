@@ -14,70 +14,54 @@ To write a python program for creating Chat using TCP Sockets Links.
 ## Server
 ```
 import socket
-# Create socket
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# Bind host and port
-host = '127.0.0.1'
-port = 5000
-server_socket.bind((host, port))
-# Listen for client
-server_socket.listen(1)
-print("Waiting for client connection...")
-# Accept connection
-client_socket, addr = server_socket.accept()
-print("Connected to:", addr)
+s = socket.socket()
+s.bind(('localhost', 8000))
+s.listen(5)
+print("Server waiting for client...")
+c, addr = s.accept()
+print("Client connected:", addr)
 while True:
-    # Receive message from client
-    client_message = client_socket.recv(1024).decode()
-    print("Client:", client_message)
-    # Exit condition
-    if client_message.lower() == "bye":
+    msg = input("Server: ")
+    c.send(msg.encode())
+    if msg.lower() == "exit":
         break
-    # Send message to client
-    message = input("Server: ")
-    client_socket.send(message.encode())
-    if message.lower() == "bye":
+    data = c.recv(1024).decode()
+    if not data or data.lower() == "exit":
+        print("Client disconnected")
         break
-# Close connection
-client_socket.close()
-server_socket.close()
+    print("Client:", data)
+c.close()
+s.close()
 ```
 
 ## Client
 ```
 import socket
-# Create socket
-client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# Server details
-host = '127.0.0.1'
-port = 5000
-# Connect to server
-client_socket.connect((host, port))
+s = socket.socket()
+s.connect(('localhost', 8000))
 print("Connected to server")
 while True:
-    # Send message to server
-    message = input("Client: ")
-    client_socket.send(message.encode())
-    if message.lower() == "bye":
+    data = s.recv(1024).decode()
+    if not data or data.lower() == "exit":
+        print("Server disconnected")
         break
-    # Receive message from server
-    server_message = client_socket.recv(1024).decode()
-    print("Server:", server_message)
-    if server_message.lower() == "bye":
+    print("Server:", data)
+    msg = input("Client: ")
+    s.send(msg.encode())
+    if msg.lower() == "exit":
         break
-# Close connection
-client_socket.close()
+s.close()
 ```
 
 ## OUPUT
 
 ## Server
 
-<img width="694" height="187" alt="image" src="https://github.com/user-attachments/assets/ebbef127-a987-4464-b2b9-80124ec6af2b" />
+<img width="701" height="194" alt="image" src="https://github.com/user-attachments/assets/2c781402-c5d4-4247-93c7-47ba467723c5" />
 
 ## Client
 
-<img width="680" height="122" alt="image" src="https://github.com/user-attachments/assets/587b2870-168c-4690-b471-4ffc235e4a6d" />
+<img width="744" height="188" alt="image" src="https://github.com/user-attachments/assets/021abd04-e15f-4858-805c-20ccde4d8d1d" />
 
 ## RESULT
 
